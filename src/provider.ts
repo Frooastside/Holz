@@ -5,7 +5,7 @@ import {
   GetSolutionsResult,
   SolutionProvider
 } from "puppeteer-extra-plugin-recaptcha/dist/types";
-import { Captcha, isCaptcha } from "types";
+import { Captcha, isCaptcha } from "./types";
 
 export const PROVIDER_ID = "holz";
 
