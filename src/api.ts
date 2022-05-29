@@ -47,7 +47,7 @@ router.get("/", async (req, res) => {
 
 router.patch("/", async (req, res) => {
   let currentState: Captcha | undefined;
-  if (!isCaptcha(req.body) || !isCaptcha(req.query) || !(currentState = fetchCaptcha(req.body.cid))) {
+  if (!(isCaptcha(req.body) || isCaptcha(req.query)) || !(currentState = fetchCaptcha(req.body.cid))) {
     return res.sendStatus(400);
   }
   const newState = (isCaptcha(req.body) ? req.body : req.query) as Captcha;
