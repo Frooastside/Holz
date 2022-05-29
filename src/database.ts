@@ -9,5 +9,9 @@ export function patchCaptcha(captcha: Captcha) {
 }
 
 export function fetchCaptcha(cid: string): Captcha | undefined {
-  return database.getData(`/captchas/${cid}`);
+  try {
+    return database.getData(`/captchas/${cid}`);
+  } catch (error) {
+    return undefined;
+  }
 }

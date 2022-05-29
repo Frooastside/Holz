@@ -7,7 +7,7 @@ const router: Router = express.Router();
 
 router.post("/", async (req, res) => {
   const url = req.body.url ?? req.query.url;
-  const sitekey = req.body.url ?? req.query.sitekey;
+  const sitekey = req.body.sitekey ?? req.query.sitekey;
   if (!url || !sitekey) {
     return res.sendStatus(400);
   }
