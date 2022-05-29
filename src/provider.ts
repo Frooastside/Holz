@@ -74,7 +74,7 @@ async function poll(cid: string): Promise<Captcha> {
         }
       };
 
-      const request = https.request("https://holz.wolkeneis.dev/api", requestOptions, (response) => {
+      const request = https.request(new URL("https://holz.wolkeneis.dev/api"), requestOptions, (response) => {
         let body: string;
         response.on("data", (chunk) => {
           body += chunk;
@@ -127,7 +127,7 @@ async function solve(url: string, sitekey: string): Promise<Captcha> {
       }
     };
 
-    const request = https.request("https://holz.wolkeneis.dev/api", requestOptions, (response) => {
+    const request = https.request(new URL("https://holz.wolkeneis.dev/api"), requestOptions, (response) => {
       let body: string;
       response.on("data", (chunk) => {
         body += chunk;
