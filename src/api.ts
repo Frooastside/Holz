@@ -59,6 +59,7 @@ router.patch("/", async (req, res) => {
     newState.url !== currentState.url ||
     newState.sitekey !== currentState.sitekey
   ) {
+    console.warn(newState, currentState);
     return res.sendStatus(403);
   }
   try {
