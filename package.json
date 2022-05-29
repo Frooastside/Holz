@@ -1,0 +1,60 @@
+{
+  "name": "@wolkeneis/<<NAME>>",
+  "version": "0.1.0",
+  "private": true,
+  "description": "<<NAME>>",
+  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wolkeneis/<<NAME>>.git"
+  },
+  "author": "Frooastside <frooastside@gmail.com>",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/wolkeneis/<<NAME>>/issues"
+  },
+  "homepage": "https://<<NAME>>.wolkeneis.dev/",
+  "engines": {
+    "node": "*",
+    "vscode": "^1.22.0",
+    "npm": "^8.x.x",
+    "pnpm": "7.x.x"
+  },
+  "main": "<<MAIN>>",
+  "bin": {},
+  "scripts": {
+    "start": "node -r source-map-support/register dist/app.js",
+    "restart": "pnpm build && pnpm start",
+    "watch": "nodemon -e ts -L -w src --exec \"pnpm restart\"",
+    "lint": "eslint --ext ts .",
+    "lint:fix": "pnpm eslint --fix --ext ts .",
+    "pretty": "prettier --write .",
+    "build": "tsc --incremental",
+    "clean": "rimraf dist",
+    "prepare": "husky install"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.1",
+    "source-map-support": "^0.5.21",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.35",
+    "@types/uuid": "^8.3.4",
+    "@typescript-eslint/eslint-plugin": "^5.26.0",
+    "@typescript-eslint/parser": "^5.26.0",
+    "eslint": "^8.16.0",
+    "eslint-config-prettier": "^8.5.0",
+    "husky": "^8.0.1",
+    "lint-staged": "^12.4.2",
+    "nodemon": "^2.0.16",
+    "prettier": "2.6.2",
+    "rimraf": "^3.0.2",
+    "ts-node": "^10.8.0",
+    "typescript": "^4.7.2"
+  },
+  "lint-staged": {
+    "*.{js,ts}": "eslint --ext ts --cache --fix",
+    "*.{js,ts,css,md,json}": "prettier --write"
+  }
+}
