@@ -11,6 +11,7 @@ app.set("trust proxy", 1);
 
 app.use(express.json());
 
-app.use(api);
+app.use("/api", api);
+app.all("/", (_req, res) => res.sendStatus(200));
 
 app.listen(env("PORT") || 6000);
