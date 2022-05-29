@@ -1,7 +1,6 @@
 {
-  "name": "holz",
+  "name": "holz-provider",
   "version": "0.1.0",
-  "private": true,
   "description": "Holz Captcha Provider + Server",
   "keywords": [],
   "repository": {
