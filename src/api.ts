@@ -1,29 +1,36 @@
-import { fetchCaptcha, patchCaptcha } from "./database";
 import express, { Router } from "express";
+import { v4 as uuidv4 } from "uuid";
+import { fetchCaptcha, patchCaptcha } from "./database";
 import { Captcha, isCaptcha } from "./types";
+
 const router: Router = express.Router();
 
-router.put("/", async (req, res) => {
-  if (!isCaptcha(req.body) || fetchCaptcha(req.body.cid)) {
+router.post("/", async (req, res) => {
+  const url = req.body.url ?? req.query.url;
+  const sitekey = req.body.url ?? req.query.sitekey;
+  if (!url || !sitekey) {
     return res.sendStatus(400);
   }
-  const captcha = req.body as Captcha;
+  const cid = uuidv4();
+  const captcha: Captcha = {
+    cid: cid,
+    url: url,
+    sitekey: sitekey,
+    creationDate: Date.now()
+  };
   try {
-    patchCaptcha({
-      ...captcha,
-      creationDate: Date.now()
-    });
-    return res.sendStatus(204);
+    patchCaptcha(captcha);
+    return res.json(cid);
   } catch (error) {
     return res.sendStatus(500);
   }
 });
 
 router.get("/", async (req, res) => {
-  if (!req.body.cid) {
+  const cid = req.body.cid ?? req.query.cid;
+  if (!cid) {
     return res.sendStatus(400);
   }
-  const cid = req.body.cid as string;
   try {
     const captcha = fetchCaptcha(cid);
     if (!captcha) {
@@ -39,11 +46,11 @@ router.get("/", async (req, res) => {
 });
 
 router.patch("/", async (req, res) => {
-  const currentState = fetchCaptcha(req.body.cid);
-  if (!isCaptcha(req.body) || !currentState) {
+  let currentState: Captcha | undefined;
+  if (!isCaptcha(req.body) || !isCaptcha(req.query) || !(currentState = fetchCaptcha(req.body.cid))) {
     return res.sendStatus(400);
   }
-  const newState = req.body as Captcha;
+  const newState = (isCaptcha(req.body) ? req.body : req.query) as Captcha;
   if (!newState.token) {
     return res.sendStatus(403);
   }

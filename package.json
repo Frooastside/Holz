@@ -2,7 +2,7 @@
   "name": "holz",
   "version": "0.1.0",
   "private": true,
-  "description": "Holz Server",
+  "description": "Holz Captcha Provider + Server",
   "keywords": [],
   "repository": {
     "type": "git",
@@ -20,7 +20,7 @@
     "npm": "^8.x.x",
     "pnpm": "7.x.x"
   },
-  "main": "dist/app.js",
+  "main": "dist/provider.js",
   "bin": {},
   "scripts": {
     "start": "node -r source-map-support/register dist/app.js",
@@ -36,6 +36,8 @@
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "node-json-db": "^1.5.0",
+    "puppeteer-extra": "^3.2.3",
+    "puppeteer-extra-plugin-recaptcha": "^3.5.0",
     "source-map-support": "^0.5.21",
     "uuid": "^8.3.2"
   },
