@@ -21,12 +21,12 @@ export class Holz implements SolutionProvider {
     this.requestSolver = requestSolver;
   }
 
-  async _getSolutions(captchas: CaptchaInfo[], token?: string): Promise<GetSolutionsResult> {
+  _getSolutions = async (captchas: CaptchaInfo[], token?: string): Promise<GetSolutionsResult> => {
     const solutions = await Promise.all(captchas.map((captcha) => this._getSolution(captcha)));
     return { solutions, error: solutions.find((solution) => !!solution.error) };
-  }
+  };
 
-  async _getSolution(captcha: CaptchaInfo): Promise<CaptchaSolution> {
+  _getSolution = async (captcha: CaptchaInfo): Promise<CaptchaSolution> => {
     const solution: CaptchaSolution = {
       _vendor: captcha._vendor,
       provider: PROVIDER_ID
@@ -41,7 +41,7 @@ export class Holz implements SolutionProvider {
       solution.id = captcha.id;
       solution.requestAt = new Date();
 
-      const result = await this.solve(
+      const result = await this._solve(
         captcha.url,
         captcha.sitekey,
         (cid) => this.requestSolver && this.requestSolver(cid, captcha)
@@ -56,9 +56,9 @@ export class Holz implements SolutionProvider {
       solution.error = (error as Error).toString();
     }
     return solution;
-  }
+  };
 
-  async poll(cid: string): Promise<Captcha> {
+  _poll = async (cid: string): Promise<Captcha> => {
     return new Promise<Captcha>(async (resolve, reject) => {
       const clearTime = () => {
         clearTimeout(timeout);
@@ -116,9 +116,9 @@ export class Holz implements SolutionProvider {
         request.end();
       }, 2500);
     });
-  }
+  };
 
-  async solve(url: string, sitekey: string, cidCallback?: (cid: string) => void): Promise<Captcha> {
+  _solve = async (url: string, sitekey: string, cidCallback?: (cid: string) => void): Promise<Captcha> => {
     return new Promise<Captcha>((resolve, reject) => {
       const data = JSON.stringify({
         url: url,
@@ -145,7 +145,7 @@ export class Holz implements SolutionProvider {
           try {
             cid = JSON.parse(body);
             cidCallback && cidCallback(cid);
-            resolve(await this.poll(cid));
+            resolve(await this._poll(cid));
           } catch (error) {
             reject((error as Error).toString());
           }
@@ -158,5 +158,5 @@ export class Holz implements SolutionProvider {
       request.write(data);
       request.end();
     });
-  }
+  };
 }
