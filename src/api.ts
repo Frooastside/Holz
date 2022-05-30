@@ -36,9 +36,6 @@ router.get("/", async (req, res) => {
     if (!captcha) {
       return res.sendStatus(400);
     }
-    if (!captcha.token) {
-      return res.sendStatus(425);
-    }
     return res.json(captcha);
   } catch (error) {
     return res.sendStatus(500);

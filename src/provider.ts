@@ -80,12 +80,9 @@ async function poll(cid: string): Promise<Captcha> {
           body += chunk;
         });
         response.on("end", () => {
-          if (response.statusCode !== 200 && response.statusCode !== 425) {
+          if (response.statusCode !== 200) {
             clearTime();
             return reject(body);
-          }
-          if (response.statusCode == 425) {
-            return;
           }
           let captcha: Captcha;
           try {
@@ -93,6 +90,9 @@ async function poll(cid: string): Promise<Captcha> {
             if (!isCaptcha(captcha)) {
               clearTime();
               return reject(`Invalid captcha: ${JSON.stringify(captcha)}`);
+            }
+            if (!captcha.token) {
+              return;
             }
             clearTime();
             return resolve(captcha);
