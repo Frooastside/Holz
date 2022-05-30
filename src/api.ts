@@ -5,6 +5,22 @@ import { Captcha, isCaptcha } from "./types";
 
 const router: Router = express.Router();
 
+router.get("/", async (req, res) => {
+  const cid = req.query.cid;
+  if (!cid || !(typeof cid === "string")) {
+    return res.sendStatus(400);
+  }
+  try {
+    const captcha = fetchCaptcha(cid);
+    if (!captcha) {
+      return res.sendStatus(400);
+    }
+    return res.json(captcha);
+  } catch (error) {
+    return res.sendStatus(500);
+  }
+});
+
 router.post("/", async (req, res) => {
   const url = req.body.url ?? req.query.url;
   const sitekey = req.body.sitekey ?? req.query.sitekey;
@@ -21,22 +37,6 @@ router.post("/", async (req, res) => {
   try {
     patchCaptcha(captcha);
     return res.json(cid);
-  } catch (error) {
-    return res.sendStatus(500);
-  }
-});
-
-router.get("/", async (req, res) => {
-  const cid = req.body.cid ?? req.query.cid;
-  if (!cid) {
-    return res.sendStatus(400);
-  }
-  try {
-    const captcha = fetchCaptcha(cid);
-    if (!captcha) {
-      return res.sendStatus(400);
-    }
-    return res.json(captcha);
   } catch (error) {
     return res.sendStatus(500);
   }
