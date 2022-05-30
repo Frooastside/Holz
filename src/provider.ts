@@ -5,6 +5,7 @@ import {
   GetSolutionsResult,
   SolutionProvider
 } from "puppeteer-extra-plugin-recaptcha/dist/types";
+import { stringify } from "querystring";
 import { Captcha, isCaptcha } from "./types";
 
 export const PROVIDER_ID = "holz";
@@ -68,51 +69,47 @@ export class Holz implements SolutionProvider {
         clearInterval(interval);
       }, 180000);
       const interval = setInterval(() => {
-        const data = JSON.stringify({
-          cid: cid
-        });
         const requestOptions: RequestOptions = {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Content-Length": data.length
-          }
+          method: "GET"
         };
 
-        const request = https.request(new URL("https://holz.wolkeneis.dev/api"), requestOptions, (response) => {
-          let body = "";
-          response.on("data", (chunk) => {
-            body += chunk;
-          });
-          response.on("end", () => {
-            if (response.statusCode !== 200) {
-              clearTime();
-              return reject(body);
-            }
-            let captcha: Captcha;
-            try {
-              captcha = JSON.parse(body);
-              if (!isCaptcha(captcha)) {
+        const request = https.request(
+          new URL(`https://holz.wolkeneis.dev/api/?${stringify({ cid: cid })}`),
+          requestOptions,
+          (response) => {
+            let body = "";
+            response.on("data", (chunk) => {
+              body += chunk;
+            });
+            response.on("end", () => {
+              if (response.statusCode !== 200) {
                 clearTime();
-                return reject(`Invalid captcha: ${JSON.stringify(captcha)}`);
+                return reject(body);
               }
-              if (!captcha.token) {
-                return;
+              let captcha: Captcha;
+              try {
+                captcha = JSON.parse(body);
+                if (!isCaptcha(captcha)) {
+                  clearTime();
+                  return reject(`Invalid captcha: ${JSON.stringify(captcha)}`);
+                }
+                if (!captcha.token) {
+                  return;
+                }
+                clearTime();
+                return resolve(captcha);
+              } catch (error) {
+                clearTime();
+                return reject((error as Error).toString());
               }
-              clearTime();
-              return resolve(captcha);
-            } catch (error) {
-              clearTime();
-              return reject((error as Error).toString());
-            }
-          });
-        });
+            });
+          }
+        );
         request.on("error", (error) => {
           request.destroy();
           clearTime();
           reject(error.toString());
         });
-        request.write(data);
         request.end();
       }, 10000);
     });
