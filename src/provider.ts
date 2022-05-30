@@ -114,7 +114,7 @@ export class Holz implements SolutionProvider {
         });
         request.write(data);
         request.end();
-      }, 2500);
+      }, 10000);
     });
   };
 
